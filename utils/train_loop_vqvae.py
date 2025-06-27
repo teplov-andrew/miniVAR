@@ -1,5 +1,5 @@
 from collections import defaultdict
-from tqdm.notebook import tqdm
+from tqdm.auto import tqdm
 from typing import Tuple
 
 import torch

@@ -5,6 +5,7 @@ from matplotlib import pyplot as plt
 from torchvision.utils import make_grid
 from typing import Dict, List, Optional, Tuple
 from models.vq_vae import VQVAEModel
+from config import CFG
 
 TICKS_FONT_SIZE = 12
 LEGEND_FONT_SIZE = 12
@@ -141,8 +142,8 @@ def vq_vae_visulization(model, test_loader, test_losses, show_samples, save_path
 
     samples = model.sample(100)
     samples = samples.astype("float32")
-    # show_samples(samples, title="Samples")
-    plt.savefig(save_path_samples)
+    show_samples(samples, title="Samples")
+    plt.savefig(CFG.VISUALIZETIONS_PATH + "/" + save_path_samples)
     print(f"Samples image saved to {save_path_samples}")
 
     x = next(iter(test_loader))[:50].cuda()
@@ -152,8 +153,8 @@ def vq_vae_visulization(model, test_loader, test_losses, show_samples, save_path
     x = x.cpu().numpy()
     reconstructions = np.concatenate((x, x_recon), axis=0)
     reconstructions = reconstructions.astype("float32")
-    # show_samples(reconstructions, title="Reconstructions")
-    plt.savefig(save_path_recon)
+    show_samples(reconstructions, title="Reconstructions")
+    plt.savefig(CFG.VISUALIZETIONS_PATH + "/" + save_path_recon)
     print(f"Reconstructions image saved to {save_path_recon}")
     
     

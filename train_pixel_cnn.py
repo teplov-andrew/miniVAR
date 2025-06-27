@@ -132,13 +132,19 @@ train_losses, test_losses = train_model(
     CFG.STAGE_IDS,
     train_loader,
     test_loader,
-    epochs=CFG.PIXELCNN_EPOCHS,
+    epochs=EPOCHS,
     lr=CFG.PIXELCNN_LR,
     use_tqdm=True,
     use_cuda=USE_CUDA,
 )
+if not os.path.exists(CFG.VISUALIZETIONS_PATH):
+    os.makedirs(CFG.VISUALIZETIONS_PATH)
 
-model_save_path = "pixelcnn_model.pth"
+
+if not os.path.exists(CFG.CHECKPOINTS_PATH):
+    os.makedirs(CFG.CHECKPOINTS_PATH)
+
+model_save_path = CFG.CHECKPOINTS_PATH + "/" + "pixelcnn_model.pth"
 torch.save(prior_model.state_dict(), model_save_path)
 print(f"PixelCNN model saved to {model_save_path}")
 
@@ -151,23 +157,23 @@ visualize_coarse_to_fine_samples(
     num_samples=6,    
     device="cuda"
 )
-plt.savefig("pixelcnn_coarse_to_fine_samples.png")
+plt.savefig(CFG.VISUALIZETIONS_PATH + "/" + "pixelcnn_coarse_to_fine_samples.png")
 plt.close()
 
 plt.figure()
 show_pixelcnn_samples(vqvae_model, prior_model, num_samples=36, device="cuda")
-plt.savefig("pixelcnn_samples.png")
+plt.savefig(CFG.VISUALIZETIONS_PATH + "/" + "pixelcnn_samples.png")
 plt.close()
 
 
 plt.figure()
 generate_var_style_samples(vqvae_model, prior_model, CFG.LEVELS, num_samples=36, device="cuda")
-plt.savefig("pixelcnn_var_style_samples.png")
+plt.savefig(CFG.VISUALIZETIONS_PATH + "/" + "pixelcnn_var_style_samples.png")
 plt.close()
 
 imgs = sample_var_style(prior_model, vqvae_model, levels=CFG.LEVELS, stage_ids=CFG.STAGE_IDS, cfg_scale=CFG.PIXELCNN_CFG_SCALE, num_samples=16, device="cuda")
 show_samples(imgs, title="VAR-style Sampled Images")
-plt.savefig("pixelcnn_var_style_samples_cfg.png")
+plt.savefig(CFG.VISUALIZETIONS_PATH + "/" + "pixelcnn_var_style_samples_cfg.png")
 plt.close()
 
 

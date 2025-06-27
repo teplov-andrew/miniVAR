@@ -38,6 +38,15 @@ EPOCHS = CFG.VQVAE_EPOCHS
 LR = CFG.VQVAE_LR
 CE_SCALE = CFG.VQVAE_CE_SCALE
 
+
+
+train_data, test_data = load_dataset("mnist", flatten=False, binarize=True)
+
+model = VQVAEModel(ce_loss_scale=CE_SCALE, latent_dim=CFG.VQVAE_LATENT_DIM, num_embeddings=CFG.VQVAE_NUM_EMBEDDINGS)
+
+train_loader = data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+test_loader = data.DataLoader(test_data, batch_size=BATCH_SIZE)
+
 wandb.init(
     project=CFG.WANDB_PROJECT,  
     name="VQ-VAE_training",
@@ -49,13 +58,6 @@ wandb.init(
     }
 )
 
-train_data, test_data = load_dataset("mnist", flatten=False, binarize=True)
-
-model = VQVAEModel(ce_loss_scale=CE_SCALE, latent_dim=CFG.VQVAE_LATENT_DIM, num_embeddings=CFG.VQVAE_NUM_EMBEDDINGS)
-
-train_loader = data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
-test_loader = data.DataLoader(test_data, batch_size=BATCH_SIZE)
-
 train_losses, test_losses = train_model(
     model,
     train_loader,
@@ -66,6 +68,8 @@ train_losses, test_losses = train_model(
     lr=LR,
 )
 
+if not os.path.exists(CFG.VISUALIZETIONS_PATH):
+    os.makedirs(CFG.VISUALIZETIONS_PATH)
 
 if not os.path.exists(CFG.CHECKPOINTS_PATH):
     os.makedirs(CFG.CHECKPOINTS_PATH)

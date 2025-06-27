@@ -19,7 +19,7 @@ class CFG:
     PIXELCNN_N_FILTERS = 128
     PIXELCNN_KERNEL_SIZE = 5
     PIXELCNN_NUM_EMBEDDINGS = 128
-    PIXELCNN_EPOCHS = 100
+    PIXELCNN_EPOCHS = 20
     PIXELCNN_LR = 2e-5
     PIXELCNN_CFG_SCALE = 6.5
     
@@ -28,3 +28,4 @@ class CFG:
     STAGE_IDS = {1: 0, 2: 1, 4: 2, 7: 3}
     
     CHECKPOINTS_PATH = "output_checkpoints"
+    VISUALIZETIONS_PATH = "output_visualizetations"

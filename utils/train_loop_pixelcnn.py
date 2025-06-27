@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as F
 from torch import optim
 from collections import defaultdict
-from tqdm.notebook import tqdm
+from tqdm.auto import tqdm
 import matplotlib.pyplot as plt
 import wandb
 from config import CFG
@@ -199,7 +199,7 @@ def train_model(
             save_path_nsp = f"pixelcnn_nsp_epoch_{epoch+1}.png"
             fig = plt.figure(figsize=(len(levels) * 3, 3))
             visualize_nsp(model_nsp, vq_vae, levels, stage_ids)
-            plt.savefig(save_path_nsp)
+            plt.savefig(CFG.VISUALIZETIONS_PATH + "/" + save_path_nsp)
             plt.close(fig)
             print(f"NSP visualization saved to {save_path_nsp}")
 

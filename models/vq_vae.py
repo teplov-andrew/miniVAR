@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from models.vector_quantizer import VectorQuantizer
+from config import CFG
 
 class ConvEncoder(nn.Module):
     def __init__(self, latent_dim: int) -> None:
@@ -49,6 +50,7 @@ class VQVAEModel(nn.Module):
         num_embeddings: int = 64,
         latent_size: tuple = (7, 7),
         levels: list[int] = [1, 2, 4, 7],
+        device="cuda:0"
     ) -> None:
         super().__init__()
         self.encoder = ConvEncoder(latent_dim)
@@ -57,6 +59,7 @@ class VQVAEModel(nn.Module):
         self.ce_loss_scale = ce_loss_scale
         self.latent_size = latent_size
         self.levels = levels
+        self.device = device
 
 
     def multi_scale_forward(self, x: torch.Tensor) -> tuple:
@@ -68,7 +71,7 @@ class VQVAEModel(nn.Module):
         idx7 = self.vq_layer.get_code_indices(z)
         
         latent_H, latent_W = self.latent_size
-        canvas = torch.zeros(B, C, latent_H, latent_W, device=device)
+        canvas = torch.zeros(B, C, latent_H, latent_W, device=self.device)
         
         logits = {}
         for k, p in enumerate(self.levels):
