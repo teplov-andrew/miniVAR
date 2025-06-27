@@ -70,8 +70,8 @@ def train_model(
         train_loss = train_epoch(model, train_loader, optimizer, use_cuda, loss_key)
         test_loss = eval_model(model, test_loader, use_cuda)
 
-        train_loss_epoch = train_loss["total_loss"][-1]    # a single float
-        test_loss_epoch  = test_loss["total_loss"]         # already a float
+        train_loss_epoch = train_loss["total_loss"][-1]    
+        test_loss_epoch  = test_loss["total_loss"]       
         
         wandb.log({
             "loss/train_total": train_loss_epoch,

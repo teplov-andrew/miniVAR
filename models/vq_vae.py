@@ -1,3 +1,9 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import numpy as np
+from models.vector_quantizer import VectorQuantizer
+
 class ConvEncoder(nn.Module):
     def __init__(self, latent_dim: int) -> None:
         super().__init__()

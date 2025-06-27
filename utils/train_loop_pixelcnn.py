@@ -6,6 +6,8 @@ from tqdm.notebook import tqdm
 import matplotlib.pyplot as plt
 import wandb
 from config import CFG
+from typing import Tuple
+from models.pixel_cnn import PixelCNN_NX
 
 def train_epoch(
     model: object,

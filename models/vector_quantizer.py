@@ -1,3 +1,6 @@
+import torch
+import torch.nn as nn
+
 class VectorQuantizer(nn.Module):
     def __init__(
         self, num_embeddings: int = 128, embedding_dim: int = 16, beta: float = 0.25, levels = [1, 2, 4, 7]) -> None:
@@ -25,23 +28,18 @@ class VectorQuantizer(nn.Module):
         input_shape = x.shape[:-1]
         flattened = x.view(-1, self.embedding_dim)
         
-        # calculate distances from flatten inputs to embeddings
-        # find nearest embeddings to each input (use argmin op)
 
         distances = (torch.sum(flattened ** 2, dim=1, keepdim=True) +
                      torch.sum(self.embedding.weight ** 2, dim=1) -
                      2 * torch.matmul(flattened, self.embedding.weight.t())
                      )
 
-        # Derive the indices for minimum distances.
         encoding_indices = torch.argmin(distances, dim=1)
         
         encoding_indices = encoding_indices.view(input_shape)
         return encoding_indices
 
     def get_quantized(self, encoding_indices: torch.Tensor) -> torch.Tensor:
-        # get embeddgins with appropriate indices
-        # transform tensor from BHWC to BCHW format
         quantized = self.embedding(encoding_indices).permute(0, 3, 1, 2).contiguous()
         
         return quantized
@@ -62,15 +60,10 @@ class VectorQuantizer(nn.Module):
 
     
     def forward(self, x: torch.Tensor) -> tuple:
-        
-        # get indices -> get quantized latents -> calculate codebook and commitment loss
-        # final loss is codebook_loss + beta * commitment_loss
-
         quantized = self.get_quantized(self.get_code_indices(x))
 
         loss = torch.mean((quantized.detach() - x)**2) + self.beta * torch.mean((quantized - x.detach())**2)
 
-        # Straight-through estimator!!! 
         quantized = x + (quantized - x).detach()
 
         return quantized, loss

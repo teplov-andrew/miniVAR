@@ -26,3 +26,5 @@ class CFG:
     
     LEVELS = [1, 2, 4, 7]
     STAGE_IDS = {1: 0, 2: 1, 4: 2, 7: 3}
+    
+    CHECKPOINTS_PATH = "output_checkpoints"

@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy
 from scipy.stats import entropy
 from tqdm.notebook import tqdm
 
@@ -13,14 +12,13 @@ from torch.nn import functional as F
 
 from torch.utils.data import Dataset, DataLoader
 
-from collections import defaultdict
-from typing import Tuple
-
 import wandb
 
-from models.pixel_cnn import PixelCNN_NX
-from utils.train_loop_pixelcnn import train_model
 from config import CFG
+from utils.load_dataset import load_dataset 
+from models.pixel_cnn import PixelCNN_NX
+from models.vq_vae import VQVAEModel
+from utils.train_loop_pixelcnn import train_model
 from utils.visualize import visualize_coarse_to_fine_samples, show_pixelcnn_samples, generate_var_style_samples, sample_var_style, show_samples
 
 USE_CUDA = torch.cuda.is_available()
@@ -31,21 +29,20 @@ if USE_CUDA:
 else:
     device = "cpu"
     
+train_data, test_data = load_dataset("mnist", flatten=False, binarize=True)
+train_loader = DataLoader(train_data, batch_size=CFG.BATCH_SIZE, shuffle=True)
+test_loader = DataLoader(test_data, batch_size=CFG.BATCH_SIZE)
 
-from models.vq_vae import VQVAEModel
-
-
+    
 CE_SCALE = CFG.VQVAE_CE_SCALE
 vqvae_model = VQVAEModel(ce_loss_scale=CE_SCALE, latent_dim=CFG.VQVAE_LATENT_DIM, num_embeddings=CFG.VQVAE_NUM_EMBEDDINGS)
-vqvae_weights_path = "vqvae_model_weights.pth"
+vqvae_weights_path = CFG.CHECKPOINTS_PATH + "/" + "vqvae_model_weights.pth"
 vqvae_model.load_state_dict(torch.load(vqvae_weights_path, map_location=device))
 vqvae_model = vqvae_model.to(device)
 vqvae_model.eval()
 print(f"Loaded VQ-VAE weights from {vqvae_weights_path}")
 
-
 INPUT_SHAPE = CFG.PIXELCNN_INPUT_SHAPE
-
 
 train_indices_list = []
 test_indices_list = []
@@ -115,9 +112,9 @@ prior_model = PixelCNN_NX(num_embeddings=128,
 )
 
 wandb.init(
-    project="VAR",  
+    project=CFG.WANDB_PROJECT,  
     name="PixelCNN_training",
-    entity="andrew_tep",   
+    entity=CFG.WANDB_ENTITY,   
     config={
         "learning_rate": LR,
         "batch_size": BATCH_SIZE,

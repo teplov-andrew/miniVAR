@@ -18,6 +18,11 @@ from typing import Tuple
 
 import wandb
 
+from models.vq_vae import VQVAEModel
+from utils.train_loop_vqvae import train_model
+from utils.load_dataset import load_dataset
+from utils.visualize import vq_vae_visulization, show_samples
+
 from config import CFG
 
 USE_CUDA = torch.cuda.is_available()
@@ -27,13 +32,6 @@ if USE_CUDA:
     device = "cuda"
 else:
     device = "cpu"
-
-
-from models.vq_vae import VQVAEModel
-from utils.train_loop_vqvae import train_model
-from utils.load_dataset import load_dataset
-from utils.visualize import vq_vae_visulization, show_samples
-
 
 BATCH_SIZE = CFG.BATCH_SIZE
 EPOCHS = CFG.VQVAE_EPOCHS
@@ -68,7 +66,11 @@ train_losses, test_losses = train_model(
     lr=LR,
 )
 
-save_path = "vqvae_model_weights.pth"
+
+if not os.path.exists(CFG.CHECKPOINTS_PATH):
+    os.makedirs(CFG.CHECKPOINTS_PATH)
+    
+save_path = CFG.CHECKPOINTS_PATH + "/" + "vqvae_model_weights.pth"
 torch.save(model.state_dict(), save_path)
 print(f"Model weights saved to {save_path}")
 
