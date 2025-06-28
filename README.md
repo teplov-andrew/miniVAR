@@ -17,6 +17,7 @@ This repository is a lightweight, teaching-scale re-implementation of the main i
 - [x] Lightweight **PixelCNN** with masked convolutions (A → B), purely unconditional.
 - [x] Conditional “stage” embedding that tells the model which up-sampling step it’s at (1→2, 2→4, 4→7).
 - [x] At each scale, we upscale previous indices, one-hot, add stage embedding, predict next indices. (Next-Scale Prediction)
+- [x] **WandB** integration: track experiments and visualize losses
 
 ## 🔧 What Can Be Improved (for future)
 - [ ] Replace PixelCNN with a small Transformer or DiT block for richer inductive bias.
