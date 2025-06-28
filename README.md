@@ -1,6 +1,6 @@
 # miniVAR: VQ-VAE + PixelCNN
 
-This repository is a lightweight, teaching-scale re-implementation of the main idea from **Visual Autoregressive Modeling (VAR)**: a coarse-to-fine, next-scale prediction pipeline. Instead of heavy DiT transformers, we plug in a simple PixelCNN with a small “stage” embedding to condition on previous scales.
+This repository is a lightweight, teaching-scale re-implementation of the main idea from [**Visual Autoregressive Modeling (VAR)**](https://arxiv.org/abs/2404.02905): a coarse-to-fine, next-scale prediction pipeline. Instead of heavy DiT transformers, we plug in a simple PixelCNN with a small “stage” embedding to condition on previous scales.
 
 
 <!-- ## Features
@@ -16,7 +16,7 @@ This repository is a lightweight, teaching-scale re-implementation of the main i
 - [x] **VQ-VAE:** convolutional encoder/decoder for MNIST (28×28→7×7 latents).
 - [x] Lightweight **PixelCNN** with masked convolutions (A → B), purely unconditional.
 - [x] Conditional “stage” embedding that tells the model which up-sampling step it’s at (1→2, 2→4, 4→7).
-- [x] At each scale, we upscale previous indices, one-hot, add stage embedding, predict next indices.  
+- [x] At each scale, we upscale previous indices, one-hot, add stage embedding, predict next indices. (Next-Scale Prediction)
 
 ## 🔧 What Can Be Improved (for future)
 - [ ] Replace PixelCNN with a small Transformer or DiT block for richer inductive bias.
@@ -39,7 +39,7 @@ miniVAR/
 ## Installation
 1. Clone the repository and navigate to the project folder:
    ```sh
-   git clone <your-repo-url>
+   git clone https://github.com/teplov-andrew/miniVAR.git
    cd miniVAR
    ```
 2. Install dependencies:
@@ -68,3 +68,9 @@ Edit `config.py` to change model hyperparameters, training settings, or experime
 ### 4. Visualization
 - Visualizations (samples, reconstructions, training curves) are saved as PNG files during/after training.
 - Use the provided Jupyter notebook for interactive exploration.
+
+
+## Conclusion 
+The goal was to try to implement the modern algorithm from the article yourself.  
+
+In total, we managed to implement the basic techniques and tricks described in the [VAR](https://arxiv.org/abs/2404.02905) article. The generation quality is not ideal, for this you need to change the models themselves to larger ones. I did this work completely alone, so there may be bugs and flaws in the code. If there are any, I will be glad if you let me know about them.
